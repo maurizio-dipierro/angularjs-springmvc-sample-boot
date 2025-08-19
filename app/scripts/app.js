@@ -32,46 +32,46 @@
                 //configure the rounting of ng-view
                 $routeProvider
                         .when('/',
-                                {templateUrl: 'home.html',
+                                {templateUrl: 'views/home.html',
                                     publicAccess: true}
                         )
                         .when('/home',
-                                {templateUrl: 'home.html',
+                                {templateUrl: 'views/home.html',
                                     publicAccess: true}
                         )
                         .when('/login',
-                                {templateUrl: 'login.html',
+                                {templateUrl: 'views/login.html',
                                     publicAccess: true}
                         )
                         .when('/signup',
                                 {
                                     controller: 'SignupController',
-                                    templateUrl: 'signup.html',
+                                    templateUrl: 'views/signup.html',
                                     publicAccess: true}
                         )
                         .when('/posts',
                                 {controller: 'PostsController',
-                                    templateUrl: 'posts/home.html'}
+                                    templateUrl: 'views/posts/home.html'}
                         )
                         .when('/posts/new',
                                 {controller: 'NewPostController',
-                                    templateUrl: 'posts/new.html'}
+                                    templateUrl: 'views/posts/new.html'}
                         )
                         .when('/posts/:id',
                                 {controller: 'DetailsController',
-                                    templateUrl: 'posts/details.html'}
+                                    templateUrl: 'views/posts/details.html'}
                         )
                         .when('/admin/users',
-                                {templateUrl: 'admin/users.html'}
+                                {templateUrl: 'views/admin/users.html'}
                         )
                         .when('/user/home',
-                                {templateUrl: 'user/home.html'}
+                                {templateUrl: 'views/user/home.html'}
                         )
                         .when('/user/password',
-                                {templateUrl: 'user/password.html'}
+                                {templateUrl: 'views/user/password.html'}
                         )
                         .when('/user/profile',
-                                {templateUrl: 'user/profile.html'}
+                                {templateUrl: 'views/user/profile.html'}
                         )
                         .otherwise({redirectTo: '/view1'});
                 ;
