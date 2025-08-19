@@ -59,8 +59,7 @@ This version improved [the original version(without Spring Boot)](https://github
  
   ```
   npm install -g bower
-  npm install -g gulp
-  npm -g install gulp-cli --force 
+  npm install --save-dev gulp@4
   ```
  
 ## Get the source codes
