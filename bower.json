@@ -14,7 +14,7 @@
     "font-awesome": "~4.4.0",
     "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
-    "bootstrap-material-design": "~0.4.2",
+    "bootstrap-material-design": "master",
     "angular-resource": "~1.4.8",
     "angular-messages": "~1.4.8",
     "angular-cookies": "~1.4.8",
