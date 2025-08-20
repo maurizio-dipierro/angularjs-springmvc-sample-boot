@@ -1,6 +1,16 @@
 angularjs-springmvc-sample-boot
 ===============================
 
+  ```
+
+docker build -t angularjs-legacy .
+docker run --rm -it \
+  -p 3000:3000 -p 3001:3001 \
+  -v "$PWD":/app \
+  angularjs-legacy
+  ```
+
+
 An example application using AnguarJS/Bootstrap as frontend and Spring MVC as REST API producer.
 
 **More details about the source codes, please read the online GitBook: [Building REST APIs with Spring MVC](https://www.gitbook.com/book/hantsy/build-a-restful-app-with-spring-mvc-and-angularjs/details).**
