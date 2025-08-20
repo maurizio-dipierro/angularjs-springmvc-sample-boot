@@ -1,25 +1,45 @@
-FROM node:latest AS ui
-WORKDIR /usr/src/ui
-COPY package.json .
-# Setup NPM mirror, optionally for China users.
-#RUN npm config set registry https://registry.npm.taobao.org/ 
-RUN npm install 
-COPY . .
-RUN node_modules/.bin/bower install --allow-root
-RUN node_modules/.bin/gulp
+# Ambiente compatibile con Gulp 3 / Bower / BrowserSync “old”
+FROM node:10.24.1
 
-FROM maven:latest AS boot
-WORKDIR /usr/src/app
-COPY pom.xml .
-#COPY settings.xml /usr/share/maven/ref/settings-docker.xml
-RUN mvn -B -f pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve
-COPY . .
-RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml clean package -DskipTests
- 
-FROM java:8-jdk-alpine
-WORKDIR /static
-COPY --from=ui /usr/src/ui/dist/ .
+# repo Stretch -> archiviati: usa archive.debian.org
+RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
+           -e 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list \
+ && sed -i '/stretch-updates/d' /etc/apt/sources.list \
+ && printf 'Acquire::Check-Valid-Until "false";\n' > /etc/apt/apt.conf.d/99no-check-valid \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends git ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+
+# Tool globali coerenti con il progetto
+RUN npm i -g gulp@3.9.1 gulp-cli bower
+
 WORKDIR /app
-COPY --from=boot /usr/src/app/target/angularjs-springmvc-sample-boot.jar .
-ENTRYPOINT ["java", "-jar", "/app/angularjs-springmvc-sample-boot.jar"]
-#CMD ["--spring.profiles.active=postgres"]
+
+# Usa il registry ufficiale; evita audit/fund per velocizzare
+RUN npm config set registry https://registry.npmjs.org
+
+# Copia i descriptor prima (per cache layer)
+COPY package.json /app/
+# Se hai anche bower.json, lo copiamo pure
+COPY bower.json /app/
+
+# Install deps npm
+RUN npm install --no-audit --no-fund
+
+# Pinna le versioni “vecchie” per evitare il crash engine.io/browser-sync
+# (vedi errore this.pingIntervalTimer.refresh)
+RUN npm i -D browser-sync@2.18.12 socket.io@1.7.3 socket.io-client@1.7.3 \
+           engine.io@1.8.0 engine.io-client@1.8.0
+
+# Installa le dipendenze Bower (run as root -> serve --allow-root)
+RUN bower install --allow-root --config.interactive=false || true
+
+# Ora copia il resto del progetto
+COPY . /app
+
+# Espone le porte usate da BrowserSync
+EXPOSE 3000 3001
+
+# Avvio di default: server di dev
+CMD ["gulp", "serve"]
